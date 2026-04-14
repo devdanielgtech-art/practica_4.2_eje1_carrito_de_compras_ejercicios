@@ -9,38 +9,16 @@
     
     {% if carrito %}
         <h3>Productos en tu carrito:</h3>
+        <ul>
+            {% for producto in carrito %}
+            <li>
+                {{ producto }} 
+                <a href="/eliminar_producto/{{ loop.index0 }}">[Eliminar]</a>
+            </li>
+            {% endfor %}
+        </ul>
         
-        <table border="1" cellpadding="10" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio Unitario (Bs)</th>
-                    <th>Cantidad</th>
-                    <th>Total (Bs)</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in carrito %}
-                <tr>
-                    <td>{{ producto.producto }}</td>
-                    <td>Bs {{ "%.2f"|format(producto.precio) }}</td>
-                    <td>{{ producto.cantidad }}</td>
-                    <td>Bs {{ "%.2f"|format(producto.total) }}</td>
-                    <td><a href="/eliminar_producto/{{ loop.index0 }}">Eliminar</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" align="right"><strong>Total General:</strong></td>
-                    <td colspan="2"><strong>Bs {{ "%.2f"|format(total_general) }}</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-        
-        <br>
-        <p><strong>Cantidad de productos: {{ carrito|length }}</strong></p>
+        <p><strong>Total de productos: {{ carrito|length }}</strong></p>
     {% else %}
         <p>El carrito está vacío.</p>
     {% endif %}

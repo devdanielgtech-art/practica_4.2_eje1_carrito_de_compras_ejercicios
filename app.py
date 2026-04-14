@@ -12,26 +12,13 @@ def index():
 def agregar_producto():
     if request.method == "POST":
         producto = request.form.get("producto")
-        precio = float(request.form.get("precio"))
-        cantidad = int(request.form.get("cantidad"))
-        total = precio * cantidad
         
         # Obtener carrito actual de las cookies
-        carrito_cookie = request.cookies.get('carrito')
-        
-        if carrito_cookie and carrito_cookie != '':
-            carrito = json.loads(carrito_cookie)
-        else:
-            carrito = []
+        carrito_json = request.cookies.get('carrito', '[]')
+        carrito = json.loads(carrito_json)
         
         # Agregar nuevo producto
-        nuevo_producto = {
-            "producto": producto,
-            "precio": precio,
-            "cantidad": cantidad,
-            "total": total
-        }
-        carrito.append(nuevo_producto)
+        carrito.append(producto)
         
         # Guardar carrito en cookies
         carrito_json = json.dumps(carrito)
@@ -49,19 +36,10 @@ def producto_agregado():
 @app.route("/ver_carrito")
 def ver_carrito():
     # Obtener carrito de las cookies
-    carrito_cookie = request.cookies.get('carrito')
+    carrito_json = request.cookies.get('carrito', '[]')
+    carrito = json.loads(carrito_json)
     
-    if carrito_cookie and carrito_cookie != '':
-        carrito = json.loads(carrito_cookie)
-    else:
-        carrito = []
-    
-    # Calcular total general
-    total_general = 0
-    for item in carrito:
-        total_general = total_general + item['total']
-    
-    return render_template('ver_carrito.html', carrito=carrito, total_general=total_general)
+    return render_template('ver_carrito.html', carrito=carrito)
 
 @app.route("/vaciar_carrito")
 def vaciar_carrito():
@@ -72,12 +50,8 @@ def vaciar_carrito():
 @app.route("/eliminar_producto/<int:indice>")
 def eliminar_producto(indice):
     # Obtener carrito actual
-    carrito_cookie = request.cookies.get('carrito')
-    
-    if carrito_cookie and carrito_cookie != '':
-        carrito = json.loads(carrito_cookie)
-    else:
-        carrito = []
+    carrito_json = request.cookies.get('carrito', '[]')
+    carrito = json.loads(carrito_json)
     
     # Eliminar producto por índice
     if 0 <= indice < len(carrito):
